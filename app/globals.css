@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1a0b2e;
+  --foreground: #e4f3ff;
+  --neon-pink: #ff006e;
+  --neon-blue: #00d9ff;
+  --neon-purple: #c77dff;
+  --neon-yellow: #ffd60a;
+  --dark-purple: #2d1b47;
+  --grid-color: rgba(255, 0, 110, 0.3);
+}
+
+body {
+  color: var(--foreground);
+  background: linear-gradient(180deg, #1a0b2e 0%, #16213e 100%);
+  min-height: 100vh;
+  font-family: 'Courier New', monospace;
+}
+
+/* Synthwave grid background */
+.synthwave-grid {
+  background-image:
+    linear-gradient(rgba(255, 0, 110, 0.1) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 0, 110, 0.1) 2px, transparent 2px);
+  background-size: 50px 50px;
+  background-position: center;
+}
+
+/* Neon glow effect */
+.neon-glow {
+  text-shadow:
+    0 0 5px var(--neon-pink),
+    0 0 10px var(--neon-pink),
+    0 0 20px var(--neon-pink),
+    0 0 40px var(--neon-pink);
+}
+
+.neon-blue-glow {
+  text-shadow:
+    0 0 5px var(--neon-blue),
+    0 0 10px var(--neon-blue),
+    0 0 20px var(--neon-blue),
+    0 0 40px var(--neon-blue);
+}
+
+.neon-box {
+  box-shadow:
+    0 0 5px var(--neon-pink),
+    0 0 10px var(--neon-pink),
+    inset 0 0 15px rgba(255, 0, 110, 0.2);
+}
+
+.neon-button {
+  background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
+  box-shadow:
+    0 0 10px var(--neon-pink),
+    0 0 20px var(--neon-pink),
+    0 0 30px rgba(255, 0, 110, 0.5);
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  box-shadow:
+    0 0 15px var(--neon-pink),
+    0 0 30px var(--neon-pink),
+    0 0 45px rgba(255, 0, 110, 0.8);
+  transform: translateY(-2px);
+}
+
+.neon-input {
+  background: rgba(45, 27, 71, 0.8);
+  border: 2px solid var(--neon-purple);
+  box-shadow:
+    0 0 5px rgba(199, 125, 255, 0.5),
+    inset 0 0 10px rgba(199, 125, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-input:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow:
+    0 0 10px var(--neon-blue),
+    0 0 20px rgba(0, 217, 255, 0.5),
+    inset 0 0 10px rgba(0, 217, 255, 0.2);
+}
+
+/* Scan lines effect */
+@keyframes scanlines {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlines 10s linear infinite;
+}
