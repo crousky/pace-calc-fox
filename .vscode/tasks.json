@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev",
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "detail": "Start Next.js development server"
+    },
+    {
+      "label": "build",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [],
+      "detail": "Build Next.js application for production"
+    },
+    {
+      "label": "start",
+      "type": "npm",
+      "script": "start",
+      "problemMatcher": [],
+      "detail": "Start Next.js production server"
+    }
+  ]
+}
