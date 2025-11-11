@@ -1,0 +1,315 @@
+@page "/"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Pace Calculator</PageTitle>
+
+<div class="calculator-container">
+    <h1>PACE CALC</h1>
+    <div class="subtitle">Running Race Calculator</div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="error-message">@errorMessage</div>
+    }
+
+    <div class="input-grid">
+        <div class="input-group">
+            <label for="pace">Pace (min/km)</label>
+            <input type="text"
+                   id="pace"
+                   @bind="paceInput"
+                   @bind:event="oninput"
+                   placeholder="e.g., 5:30 or 5.5"
+                   disabled="@isPaceCalculated" />
+            <span class="hint-text">Format: MM:SS or decimal minutes</span>
+        </div>
+
+        <div class="input-group">
+            <label for="distance">Distance (km)</label>
+            <input type="text"
+                   id="distance"
+                   @bind="distanceInput"
+                   @bind:event="oninput"
+                   placeholder="e.g., 42.195 for marathon"
+                   disabled="@isDistanceCalculated" />
+            <span class="hint-text">Enter distance in kilometers</span>
+        </div>
+
+        <div class="input-group">
+            <label for="time">Time</label>
+            <input type="text"
+                   id="time"
+                   @bind="timeInput"
+                   @bind:event="oninput"
+                   placeholder="e.g., 3:45:30 or 225.5"
+                   disabled="@isTimeCalculated" />
+            <span class="hint-text">Format: HH:MM:SS or decimal minutes</span>
+        </div>
+    </div>
+
+    <button class="calculate-button" @onclick="Calculate" disabled="@(!CanCalculate())">
+        Calculate
+    </button>
+
+    @if (pastResults.Count > 0)
+    {
+        <div class="results-section">
+            <div class="results-title">Recent Calculations</div>
+            <div class="results-list">
+                @foreach (var result in pastResults)
+                {
+                    <div class="result-item">
+                        <div class="result-row">
+                            <span class="result-label">Pace:</span>
+                            <span class="result-value">@result.Pace</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Distance:</span>
+                            <span class="result-value">@result.Distance km</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Time:</span>
+                            <span class="result-value">@result.Time</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="results-section">
+            <div class="results-title">Recent Calculations</div>
+            <div class="no-results">No calculations yet. Enter 2 values and calculate!</div>
+        </div>
+    }
+</div>
+
+@code {
+    private string paceInput = string.Empty;
+    private string distanceInput = string.Empty;
+    private string timeInput = string.Empty;
+    private string errorMessage = string.Empty;
+
+    private bool isPaceCalculated = false;
+    private bool isDistanceCalculated = false;
+    private bool isTimeCalculated = false;
+
+    private List<CalculationResult> pastResults = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadPastResults();
+        }
+    }
+
+    private bool CanCalculate()
+    {
+        int filledCount = 0;
+        if (!string.IsNullOrWhiteSpace(paceInput)) filledCount++;
+        if (!string.IsNullOrWhiteSpace(distanceInput)) filledCount++;
+        if (!string.IsNullOrWhiteSpace(timeInput)) filledCount++;
+
+        return filledCount == 2;
+    }
+
+    private async Task Calculate()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            isPaceCalculated = false;
+            isDistanceCalculated = false;
+            isTimeCalculated = false;
+
+            bool hasPace = !string.IsNullOrWhiteSpace(paceInput);
+            bool hasDistance = !string.IsNullOrWhiteSpace(distanceInput);
+            bool hasTime = !string.IsNullOrWhiteSpace(timeInput);
+
+            double pace = 0, distance = 0, timeMinutes = 0;
+
+            // Parse provided values
+            if (hasPace)
+            {
+                pace = ParsePace(paceInput);
+            }
+
+            if (hasDistance)
+            {
+                if (!double.TryParse(distanceInput.Trim(), out distance) || distance <= 0)
+                {
+                    throw new Exception("Invalid distance. Please enter a positive number.");
+                }
+            }
+
+            if (hasTime)
+            {
+                timeMinutes = ParseTime(timeInput);
+            }
+
+            // Calculate missing value
+            if (!hasPace)
+            {
+                // Calculate pace from distance and time
+                pace = timeMinutes / distance;
+                paceInput = FormatPace(pace);
+                isPaceCalculated = true;
+            }
+            else if (!hasDistance)
+            {
+                // Calculate distance from pace and time
+                distance = timeMinutes / pace;
+                distanceInput = distance.ToString("F2");
+                isDistanceCalculated = true;
+            }
+            else if (!hasTime)
+            {
+                // Calculate time from pace and distance
+                timeMinutes = pace * distance;
+                timeInput = FormatTime(timeMinutes);
+                isTimeCalculated = true;
+            }
+
+            // Store result
+            var result = new CalculationResult
+            {
+                Pace = FormatPace(pace),
+                Distance = distance.ToString("F2"),
+                Time = FormatTime(timeMinutes)
+            };
+
+            await SaveResult(result);
+            await LoadPastResults();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private double ParsePace(string input)
+    {
+        input = input.Trim();
+
+        // Try MM:SS format
+        if (input.Contains(':'))
+        {
+            var parts = input.Split(':');
+            if (parts.Length != 2)
+            {
+                throw new Exception("Invalid pace format. Use MM:SS or decimal minutes.");
+            }
+
+            if (!int.TryParse(parts[0], out int minutes) || !double.TryParse(parts[1], out double seconds))
+            {
+                throw new Exception("Invalid pace format. Use MM:SS or decimal minutes.");
+            }
+
+            return minutes + (seconds / 60.0);
+        }
+
+        // Try decimal format
+        if (!double.TryParse(input, out double pace) || pace <= 0)
+        {
+            throw new Exception("Invalid pace. Please enter a positive number.");
+        }
+
+        return pace;
+    }
+
+    private double ParseTime(string input)
+    {
+        input = input.Trim();
+
+        // Try HH:MM:SS format
+        if (input.Contains(':'))
+        {
+            var parts = input.Split(':');
+
+            if (parts.Length == 2)
+            {
+                // MM:SS format
+                if (!int.TryParse(parts[0], out int minutes) || !double.TryParse(parts[1], out double seconds))
+                {
+                    throw new Exception("Invalid time format. Use HH:MM:SS or decimal minutes.");
+                }
+                return minutes + (seconds / 60.0);
+            }
+            else if (parts.Length == 3)
+            {
+                // HH:MM:SS format
+                if (!int.TryParse(parts[0], out int hours) ||
+                    !int.TryParse(parts[1], out int minutes) ||
+                    !double.TryParse(parts[2], out double seconds))
+                {
+                    throw new Exception("Invalid time format. Use HH:MM:SS or decimal minutes.");
+                }
+                return (hours * 60) + minutes + (seconds / 60.0);
+            }
+            else
+            {
+                throw new Exception("Invalid time format. Use HH:MM:SS or decimal minutes.");
+            }
+        }
+
+        // Try decimal format
+        if (!double.TryParse(input, out double time) || time <= 0)
+        {
+            throw new Exception("Invalid time. Please enter a positive number.");
+        }
+
+        return time;
+    }
+
+    private string FormatPace(double paceMinutes)
+    {
+        int minutes = (int)paceMinutes;
+        int seconds = (int)((paceMinutes - minutes) * 60);
+        return $"{minutes}:{seconds:D2} min/km";
+    }
+
+    private string FormatTime(double totalMinutes)
+    {
+        int hours = (int)(totalMinutes / 60);
+        int minutes = (int)(totalMinutes % 60);
+        int seconds = (int)((totalMinutes - Math.Floor(totalMinutes)) * 60);
+
+        if (hours > 0)
+        {
+            return $"{hours}:{minutes:D2}:{seconds:D2}";
+        }
+        else
+        {
+            return $"{minutes}:{seconds:D2}";
+        }
+    }
+
+    private async Task SaveResult(CalculationResult result)
+    {
+        await JSRuntime.InvokeVoidAsync("calculatorStorage.addResult", result);
+    }
+
+    private async Task LoadPastResults()
+    {
+        try
+        {
+            var results = await JSRuntime.InvokeAsync<List<CalculationResult>>("calculatorStorage.getResults");
+            pastResults = results ?? new List<CalculationResult>();
+            StateHasChanged();
+        }
+        catch
+        {
+            // If JS interop fails, just use empty list
+            pastResults = new List<CalculationResult>();
+        }
+    }
+
+    public class CalculationResult
+    {
+        public string Pace { get; set; } = string.Empty;
+        public string Distance { get; set; } = string.Empty;
+        public string Time { get; set; } = string.Empty;
+    }
+}
