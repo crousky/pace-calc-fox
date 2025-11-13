@@ -1,0 +1,540 @@
+@page "/"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Pace Calculator</PageTitle>
+
+<div class="calculator-container">
+    <h1>PACE CALC</h1>
+    <div class="subtitle">Running Race Calculator</div>
+
+    <!-- Unit Selection -->
+    <div class="unit-selector">
+        <div class="unit-option @(distanceUnit == DistanceUnit.Kilometers ? "active" : "")" @onclick="() => SetDistanceUnit(DistanceUnit.Kilometers)">
+            <span>KM</span>
+        </div>
+        <div class="unit-option @(distanceUnit == DistanceUnit.Miles ? "active" : "")" @onclick="() => SetDistanceUnit(DistanceUnit.Miles)">
+            <span>MI</span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="error-message">@errorMessage</div>
+    }
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab @(activeTab == CalculatorTab.CalculatePace ? "active" : "")" @onclick="() => SwitchTab(CalculatorTab.CalculatePace)">
+            Calculate Pace
+        </div>
+        <div class="tab @(activeTab == CalculatorTab.CalculateDistance ? "active" : "")" @onclick="() => SwitchTab(CalculatorTab.CalculateDistance)">
+            Calculate Distance
+        </div>
+        <div class="tab @(activeTab == CalculatorTab.CalculateTime ? "active" : "")" @onclick="() => SwitchTab(CalculatorTab.CalculateTime)">
+            Calculate Time
+        </div>
+    </div>
+
+    <div class="tab-content">
+        @if (activeTab == CalculatorTab.CalculatePace)
+        {
+            <!-- Calculate Pace Tab -->
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="distance-preset">Race Distance (Optional)</label>
+                    <select id="distance-preset" @onchange="OnRaceDistanceSelected" class="race-select">
+                        <option value="">Custom Distance</option>
+                        <option value="5">5K</option>
+                        <option value="10">10K</option>
+                        <option value="21.0975">Half Marathon</option>
+                        <option value="42.195">Marathon</option>
+                        <option value="50">50K</option>
+                        <option value="100">100K</option>
+                    </select>
+                    <span class="hint-text">Select a common race or enter custom</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="distance">Distance (@GetDistanceUnitLabel())</label>
+                    <input type="text"
+                           id="distance"
+                           @bind="distanceInput"
+                           @bind:event="oninput"
+                           placeholder="@GetDistancePlaceholder()" />
+                    <span class="hint-text">Enter distance in @GetDistanceUnitLabel()</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="time">Time</label>
+                    <input type="text"
+                           id="time"
+                           @bind="timeInput"
+                           @bind:event="oninput"
+                           placeholder="e.g., 3:45:30 or 1:30" />
+                    <span class="hint-text">Format: HH:MM:SS or MM:SS</span>
+                </div>
+            </div>
+
+            <button class="calculate-button" @onclick="CalculatePace" disabled="@(!CanCalculatePace())">
+                Calculate Pace
+            </button>
+
+            @if (!string.IsNullOrEmpty(calculatedPace))
+            {
+                <div class="result-display">
+                    <div class="result-display-label">Your Pace</div>
+                    <div class="result-display-value">@calculatedPace</div>
+                </div>
+            }
+        }
+        else if (activeTab == CalculatorTab.CalculateDistance)
+        {
+            <!-- Calculate Distance Tab -->
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="pace-distance">Pace (@GetPaceUnitLabel())</label>
+                    <input type="text"
+                           id="pace-distance"
+                           @bind="paceInput"
+                           @bind:event="oninput"
+                           placeholder="e.g., 5:30 or 5.5" />
+                    <span class="hint-text">Format: MM:SS or decimal minutes</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="time-distance">Time</label>
+                    <input type="text"
+                           id="time-distance"
+                           @bind="timeInput"
+                           @bind:event="oninput"
+                           placeholder="e.g., 3:45:30 or 1:30" />
+                    <span class="hint-text">Format: HH:MM:SS or MM:SS</span>
+                </div>
+            </div>
+
+            <button class="calculate-button" @onclick="CalculateDistance" disabled="@(!CanCalculateDistance())">
+                Calculate Distance
+            </button>
+
+            @if (!string.IsNullOrEmpty(calculatedDistance))
+            {
+                <div class="result-display">
+                    <div class="result-display-label">Distance Covered</div>
+                    <div class="result-display-value">@calculatedDistance @GetDistanceUnitLabel()</div>
+                </div>
+            }
+        }
+        else if (activeTab == CalculatorTab.CalculateTime)
+        {
+            <!-- Calculate Time Tab -->
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="distance-preset-time">Race Distance (Optional)</label>
+                    <select id="distance-preset-time" @onchange="OnRaceDistanceSelected" class="race-select">
+                        <option value="">Custom Distance</option>
+                        <option value="5">5K</option>
+                        <option value="10">10K</option>
+                        <option value="21.0975">Half Marathon</option>
+                        <option value="42.195">Marathon</option>
+                        <option value="50">50K</option>
+                        <option value="100">100K</option>
+                    </select>
+                    <span class="hint-text">Select a common race or enter custom</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="distance-time">Distance (@GetDistanceUnitLabel())</label>
+                    <input type="text"
+                           id="distance-time"
+                           @bind="distanceInput"
+                           @bind:event="oninput"
+                           placeholder="@GetDistancePlaceholder()" />
+                    <span class="hint-text">Enter distance in @GetDistanceUnitLabel()</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="pace-time">Pace (@GetPaceUnitLabel())</label>
+                    <input type="text"
+                           id="pace-time"
+                           @bind="paceInput"
+                           @bind:event="oninput"
+                           placeholder="e.g., 5:30 or 5.5" />
+                    <span class="hint-text">Format: MM:SS or decimal minutes</span>
+                </div>
+            </div>
+
+            <button class="calculate-button" @onclick="CalculateTime" disabled="@(!CanCalculateTime())">
+                Calculate Time
+            </button>
+
+            @if (!string.IsNullOrEmpty(calculatedTime))
+            {
+                <div class="result-display">
+                    <div class="result-display-label">Finish Time</div>
+                    <div class="result-display-value">@calculatedTime</div>
+                </div>
+            }
+        }
+    </div>
+
+    @if (pastResults.Count > 0)
+    {
+        <div class="results-section">
+            <div class="results-title">Recent Calculations</div>
+            <div class="results-list">
+                @foreach (var result in pastResults)
+                {
+                    <div class="result-item">
+                        <div class="result-row">
+                            <span class="result-label">Pace:</span>
+                            <span class="result-value">@result.Pace</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Distance:</span>
+                            <span class="result-value">@result.Distance</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Time:</span>
+                            <span class="result-value">@result.Time</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="results-section">
+            <div class="results-title">Recent Calculations</div>
+            <div class="no-results">No calculations yet. Select a tab and calculate!</div>
+        </div>
+    }
+</div>
+
+@code {
+    private enum CalculatorTab
+    {
+        CalculatePace,
+        CalculateDistance,
+        CalculateTime
+    }
+
+    private enum DistanceUnit
+    {
+        Kilometers,
+        Miles
+    }
+
+    private CalculatorTab activeTab = CalculatorTab.CalculatePace;
+    private DistanceUnit distanceUnit = DistanceUnit.Miles;
+
+    private string paceInput = string.Empty;
+    private string distanceInput = string.Empty;
+    private string timeInput = string.Empty;
+    private string errorMessage = string.Empty;
+
+    private string calculatedPace = string.Empty;
+    private string calculatedDistance = string.Empty;
+    private string calculatedTime = string.Empty;
+
+    private List<CalculationResult> pastResults = new();
+
+    private const double KM_TO_MILES = 0.621371;
+    private const double MILES_TO_KM = 1.60934;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadPastResults();
+        }
+    }
+
+    private void SwitchTab(CalculatorTab tab)
+    {
+        activeTab = tab;
+        ClearCalculatedResults();
+        errorMessage = string.Empty;
+    }
+
+    private void SetDistanceUnit(DistanceUnit unit)
+    {
+        if (distanceUnit == unit) return;
+
+        // Convert existing distance input if present
+        if (!string.IsNullOrWhiteSpace(distanceInput) && double.TryParse(distanceInput.Trim(), out double currentDistance))
+        {
+            if (unit == DistanceUnit.Miles)
+            {
+                // Converting from km to miles
+                distanceInput = (currentDistance * KM_TO_MILES).ToString("F3");
+            }
+            else
+            {
+                // Converting from miles to km
+                distanceInput = (currentDistance * MILES_TO_KM).ToString("F3");
+            }
+        }
+
+        distanceUnit = unit;
+        ClearCalculatedResults();
+    }
+
+    private void ClearCalculatedResults()
+    {
+        calculatedPace = string.Empty;
+        calculatedDistance = string.Empty;
+        calculatedTime = string.Empty;
+    }
+
+    private void OnRaceDistanceSelected(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        if (string.IsNullOrEmpty(value))
+        {
+            distanceInput = string.Empty;
+            return;
+        }
+
+        if (double.TryParse(value, out double distanceKm))
+        {
+            if (distanceUnit == DistanceUnit.Miles)
+            {
+                distanceInput = (distanceKm * KM_TO_MILES).ToString("F3");
+            }
+            else
+            {
+                distanceInput = distanceKm.ToString("F3");
+            }
+        }
+    }
+
+    private string GetDistanceUnitLabel() => distanceUnit == DistanceUnit.Kilometers ? "km" : "mi";
+    private string GetPaceUnitLabel() => distanceUnit == DistanceUnit.Kilometers ? "min/km" : "min/mi";
+    private string GetDistancePlaceholder() => distanceUnit == DistanceUnit.Kilometers ? "e.g., 42.195" : "e.g., 26.219";
+
+    private bool CanCalculatePace() => !string.IsNullOrWhiteSpace(distanceInput) && !string.IsNullOrWhiteSpace(timeInput);
+    private bool CanCalculateDistance() => !string.IsNullOrWhiteSpace(paceInput) && !string.IsNullOrWhiteSpace(timeInput);
+    private bool CanCalculateTime() => !string.IsNullOrWhiteSpace(distanceInput) && !string.IsNullOrWhiteSpace(paceInput);
+
+    private async Task CalculatePace()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            calculatedPace = string.Empty;
+
+            double distance = ParseDistance(distanceInput);
+            double timeMinutes = ParseTime(timeInput);
+
+            double paceMinutes = timeMinutes / distance;
+
+            calculatedPace = FormatPace(paceMinutes);
+
+            await SaveResult(new CalculationResult
+            {
+                Pace = calculatedPace,
+                Distance = $"{distance:F2} {GetDistanceUnitLabel()}",
+                Time = FormatTime(timeMinutes)
+            });
+
+            await LoadPastResults();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task CalculateDistance()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            calculatedDistance = string.Empty;
+
+            double pace = ParsePace(paceInput);
+            double timeMinutes = ParseTime(timeInput);
+
+            double distance = timeMinutes / pace;
+
+            calculatedDistance = distance.ToString("F2");
+
+            await SaveResult(new CalculationResult
+            {
+                Pace = FormatPace(pace),
+                Distance = $"{distance:F2} {GetDistanceUnitLabel()}",
+                Time = FormatTime(timeMinutes)
+            });
+
+            await LoadPastResults();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task CalculateTime()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            calculatedTime = string.Empty;
+
+            double distance = ParseDistance(distanceInput);
+            double pace = ParsePace(paceInput);
+
+            double timeMinutes = pace * distance;
+
+            calculatedTime = FormatTime(timeMinutes);
+
+            await SaveResult(new CalculationResult
+            {
+                Pace = FormatPace(pace),
+                Distance = $"{distance:F2} {GetDistanceUnitLabel()}",
+                Time = calculatedTime
+            });
+
+            await LoadPastResults();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private double ParseDistance(string input)
+    {
+        input = input.Trim();
+        if (!double.TryParse(input, out double distance) || distance <= 0)
+        {
+            throw new Exception("Invalid distance. Please enter a positive number.");
+        }
+        return distance;
+    }
+
+    private double ParsePace(string input)
+    {
+        input = input.Trim();
+
+        // Try MM:SS format
+        if (input.Contains(':'))
+        {
+            var parts = input.Split(':');
+            if (parts.Length != 2)
+            {
+                throw new Exception("Invalid pace format. Use MM:SS or decimal minutes.");
+            }
+
+            if (!int.TryParse(parts[0], out int minutes) || !double.TryParse(parts[1], out double seconds))
+            {
+                throw new Exception("Invalid pace format. Use MM:SS or decimal minutes.");
+            }
+
+            return minutes + (seconds / 60.0);
+        }
+
+        // Try decimal format
+        if (!double.TryParse(input, out double pace) || pace <= 0)
+        {
+            throw new Exception("Invalid pace. Please enter a positive number.");
+        }
+
+        return pace;
+    }
+
+    private double ParseTime(string input)
+    {
+        input = input.Trim();
+
+        // Try HH:MM:SS format
+        if (input.Contains(':'))
+        {
+            var parts = input.Split(':');
+
+            if (parts.Length == 2)
+            {
+                // MM:SS format
+                if (!int.TryParse(parts[0], out int minutes) || !double.TryParse(parts[1], out double seconds))
+                {
+                    throw new Exception("Invalid time format. Use HH:MM:SS or MM:SS.");
+                }
+                return minutes + (seconds / 60.0);
+            }
+            else if (parts.Length == 3)
+            {
+                // HH:MM:SS format
+                if (!int.TryParse(parts[0], out int hours) ||
+                    !int.TryParse(parts[1], out int minutes) ||
+                    !double.TryParse(parts[2], out double seconds))
+                {
+                    throw new Exception("Invalid time format. Use HH:MM:SS or MM:SS.");
+                }
+                return (hours * 60) + minutes + (seconds / 60.0);
+            }
+            else
+            {
+                throw new Exception("Invalid time format. Use HH:MM:SS or MM:SS.");
+            }
+        }
+
+        // Try decimal format (minutes)
+        if (!double.TryParse(input, out double time) || time <= 0)
+        {
+            throw new Exception("Invalid time. Please enter a positive number.");
+        }
+
+        return time;
+    }
+
+    private string FormatPace(double paceMinutes)
+    {
+        int minutes = (int)paceMinutes;
+        int seconds = (int)((paceMinutes - minutes) * 60);
+        return $"{minutes}:{seconds:D2} {GetPaceUnitLabel()}";
+    }
+
+    private string FormatTime(double totalMinutes)
+    {
+        int hours = (int)(totalMinutes / 60);
+        int minutes = (int)(totalMinutes % 60);
+        int seconds = (int)((totalMinutes - Math.Floor(totalMinutes)) * 60);
+
+        if (hours > 0)
+        {
+            return $"{hours}:{minutes:D2}:{seconds:D2}";
+        }
+        else
+        {
+            return $"{minutes}:{seconds:D2}";
+        }
+    }
+
+    private async Task SaveResult(CalculationResult result)
+    {
+        await JSRuntime.InvokeVoidAsync("calculatorStorage.addResult", result);
+    }
+
+    private async Task LoadPastResults()
+    {
+        try
+        {
+            var results = await JSRuntime.InvokeAsync<List<CalculationResult>>("calculatorStorage.getResults");
+            pastResults = results ?? new List<CalculationResult>();
+            StateHasChanged();
+        }
+        catch
+        {
+            // If JS interop fails, just use empty list
+            pastResults = new List<CalculationResult>();
+        }
+    }
+
+    public class CalculationResult
+    {
+        public string Pace { get; set; } = string.Empty;
+        public string Distance { get; set; } = string.Empty;
+        public string Time { get; set; } = string.Empty;
+    }
+}
