@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-    --neon-pink: #ff10f0;
+    --neon-orange: #ff6600;
     --neon-blue: #00f0ff;
     --neon-purple: #b000ff;
     --neon-yellow: #fff700;
     --dark-bg: #0a0a0f;
     --darker-bg: #050508;
-    --grid-color: #ff10f044;
+    --grid-color: #ff660044;
 }
 
 * {
@@ -66,11 +66,11 @@ body::before {
 .loading-text {
     font-size: 2rem;
     font-weight: 900;
-    color: var(--neon-pink);
+    color: var(--neon-orange);
     text-shadow:
-        0 0 10px var(--neon-pink),
-        0 0 20px var(--neon-pink),
-        0 0 30px var(--neon-pink);
+        0 0 10px var(--neon-orange),
+        0 0 20px var(--neon-orange),
+        0 0 30px var(--neon-orange);
     animation: pulse 1.5s ease-in-out infinite;
     letter-spacing: 0.3em;
 }
@@ -92,7 +92,7 @@ body::before {
     display: block;
     width: 50%;
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-orange));
     animation: loading 1.5s ease-in-out infinite;
     box-shadow: 0 0 20px var(--neon-blue);
 }
@@ -116,36 +116,36 @@ body::before {
 }
 
 .calculator-container {
-    max-width: 800px;
+    max-width: 550px;
     width: 100%;
-    padding: 40px;
+    padding: 25px;
     background: rgba(10, 10, 15, 0.8);
-    border: 2px solid var(--neon-pink);
-    border-radius: 20px;
+    border: 2px solid var(--neon-orange);
+    border-radius: 15px;
     box-shadow:
-        0 0 20px var(--neon-pink),
-        0 0 40px rgba(255, 16, 240, 0.3),
-        inset 0 0 40px rgba(0, 0, 0, 0.5);
+        0 0 15px var(--neon-orange),
+        0 0 30px rgba(255, 102, 0, 0.3),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
     text-align: center;
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue), var(--neon-purple));
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--neon-orange), var(--neon-blue), var(--neon-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 30px rgba(255, 16, 240, 0.5);
+    text-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
     letter-spacing: 0.1em;
     animation: glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes glow {
     from {
-        filter: drop-shadow(0 0 5px var(--neon-pink));
+        filter: drop-shadow(0 0 5px var(--neon-orange));
     }
     to {
         filter: drop-shadow(0 0 20px var(--neon-blue));
@@ -155,8 +155,8 @@ h1 {
 .subtitle {
     text-align: center;
     color: var(--neon-blue);
-    font-size: 0.9rem;
-    margin-bottom: 30px;
+    font-size: 0.75rem;
+    margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     opacity: 0.8;
@@ -166,18 +166,18 @@ h1 {
 .unit-selector {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-bottom: 30px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .unit-option {
-    padding: 10px 30px;
+    padding: 6px 20px;
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid var(--neon-purple);
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--neon-purple);
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 0.15em;
@@ -185,42 +185,42 @@ h1 {
 }
 
 .unit-option:hover {
-    border-color: var(--neon-pink);
-    color: var(--neon-pink);
-    box-shadow: 0 0 20px rgba(255, 16, 240, 0.5);
+    border-color: var(--neon-orange);
+    color: var(--neon-orange);
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
     transform: translateY(-2px);
 }
 
 .unit-option.active {
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    border-color: var(--neon-pink);
+    background: linear-gradient(135deg, var(--neon-orange), var(--neon-purple));
+    border-color: var(--neon-orange);
     color: white;
-    box-shadow: 0 0 25px var(--neon-pink);
+    box-shadow: 0 0 25px var(--neon-orange);
 }
 
 /* Tabs */
 .tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-    border-bottom: 2px solid rgba(255, 16, 240, 0.3);
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 102, 0, 0.3);
 }
 
 .tab {
     flex: 1;
-    padding: 15px 20px;
+    padding: 10px 12px;
     background: rgba(0, 0, 0, 0.4);
     border: 2px solid transparent;
     border-bottom: none;
-    border-radius: 10px 10px 0 0;
+    border-radius: 8px 8px 0 0;
     color: var(--neon-blue);
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     opacity: 0.6;
 }
 
@@ -232,11 +232,11 @@ h1 {
 
 .tab.active {
     opacity: 1;
-    background: rgba(255, 16, 240, 0.1);
-    border-color: var(--neon-pink);
+    background: rgba(255, 102, 0, 0.1);
+    border-color: var(--neon-orange);
     border-bottom: 2px solid rgba(10, 10, 15, 0.8);
-    color: var(--neon-pink);
-    box-shadow: 0 0 20px rgba(255, 16, 240, 0.4);
+    color: var(--neon-orange);
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
     position: relative;
     bottom: -2px;
 }
@@ -248,8 +248,8 @@ h1 {
 .input-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 25px;
-    margin-bottom: 30px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .input-group {
@@ -258,37 +258,37 @@ h1 {
 
 label {
     display: block;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: var(--neon-pink);
+    color: var(--neon-orange);
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 10px var(--neon-pink);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px var(--neon-orange);
 }
 
 input {
     width: 100%;
-    padding: 15px 20px;
+    padding: 10px 15px;
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid var(--neon-blue);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--neon-blue);
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     transition: all 0.3s ease;
     box-shadow:
-        0 0 10px rgba(0, 240, 255, 0.3),
-        inset 0 2px 10px rgba(0, 0, 0, 0.5);
+        0 0 8px rgba(0, 240, 255, 0.3),
+        inset 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 input:focus {
     outline: none;
-    border-color: var(--neon-pink);
+    border-color: var(--neon-orange);
     box-shadow:
-        0 0 20px var(--neon-pink),
-        0 0 40px rgba(255, 16, 240, 0.3),
+        0 0 20px var(--neon-orange),
+        0 0 40px rgba(255, 102, 0, 0.3),
         inset 0 2px 10px rgba(0, 0, 0, 0.5);
     transform: translateY(-2px);
 }
@@ -305,27 +305,27 @@ input:disabled {
 /* Select/Dropdown Styling */
 select.race-select {
     width: 100%;
-    padding: 15px 20px;
+    padding: 10px 15px;
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid var(--neon-blue);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--neon-blue);
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow:
-        0 0 10px rgba(0, 240, 255, 0.3),
-        inset 0 2px 10px rgba(0, 0, 0, 0.5);
+        0 0 8px rgba(0, 240, 255, 0.3),
+        inset 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 select.race-select:focus {
     outline: none;
-    border-color: var(--neon-pink);
+    border-color: var(--neon-orange);
     box-shadow:
-        0 0 20px var(--neon-pink),
-        0 0 40px rgba(255, 16, 240, 0.3),
+        0 0 20px var(--neon-orange),
+        0 0 40px rgba(255, 102, 0, 0.3),
         inset 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -337,8 +337,8 @@ select.race-select option {
 
 .hint-text {
     display: block;
-    margin-top: 8px;
-    font-size: 0.75rem;
+    margin-top: 4px;
+    font-size: 0.65rem;
     color: var(--neon-purple);
     opacity: 0.7;
     font-weight: 400;
@@ -346,21 +346,21 @@ select.race-select option {
 
 .calculate-button {
     width: 100%;
-    padding: 18px;
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    padding: 12px;
+    background: linear-gradient(135deg, var(--neon-orange), var(--neon-purple));
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
+    font-size: 0.95rem;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.15em;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow:
-        0 0 20px var(--neon-pink),
-        0 5px 15px rgba(0, 0, 0, 0.3);
+        0 0 15px var(--neon-orange),
+        0 4px 12px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -383,8 +383,8 @@ select.race-select option {
 .calculate-button:hover {
     transform: translateY(-3px);
     box-shadow:
-        0 0 30px var(--neon-pink),
-        0 0 50px rgba(255, 16, 240, 0.5),
+        0 0 30px var(--neon-orange),
+        0 0 50px rgba(255, 102, 0, 0.5),
         0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -400,15 +400,15 @@ select.race-select option {
 
 /* Result Display */
 .result-display {
-    margin-top: 25px;
-    padding: 25px;
+    margin-top: 15px;
+    padding: 15px;
     background: rgba(0, 240, 255, 0.05);
-    border: 3px solid var(--neon-blue);
-    border-radius: 15px;
+    border: 2px solid var(--neon-blue);
+    border-radius: 10px;
     text-align: center;
     box-shadow:
-        0 0 30px rgba(0, 240, 255, 0.4),
-        inset 0 0 30px rgba(0, 240, 255, 0.1);
+        0 0 20px rgba(0, 240, 255, 0.4),
+        inset 0 0 20px rgba(0, 240, 255, 0.1);
     animation: resultAppear 0.5s ease;
 }
 
@@ -424,22 +424,22 @@ select.race-select option {
 }
 
 .result-display-label {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     color: var(--neon-purple);
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 10px;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
     font-weight: 700;
 }
 
 .result-display-value {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 900;
-    background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-orange));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
     letter-spacing: 0.05em;
 }
 
@@ -463,36 +463,36 @@ select.race-select option {
 }
 
 .results-section {
-    margin-top: 40px;
-    padding-top: 40px;
-    border-top: 2px solid rgba(255, 16, 240, 0.3);
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid rgba(255, 102, 0, 0.3);
 }
 
 .results-title {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 900;
     color: var(--neon-blue);
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 15px var(--neon-blue);
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 12px var(--neon-blue);
 }
 
 .results-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
 }
 
 .result-item {
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid var(--neon-purple);
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 8px;
+    padding: 12px;
     box-shadow:
-        0 0 15px rgba(176, 0, 255, 0.3),
-        inset 0 0 20px rgba(0, 0, 0, 0.3);
+        0 0 12px rgba(176, 0, 255, 0.3),
+        inset 0 0 15px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     animation: slideIn 0.5s ease;
 }
@@ -509,9 +509,9 @@ select.race-select option {
 }
 
 .result-item:hover {
-    border-color: var(--neon-pink);
+    border-color: var(--neon-orange);
     box-shadow:
-        0 0 25px rgba(255, 16, 240, 0.5),
+        0 0 25px rgba(255, 102, 0, 0.5),
         inset 0 0 20px rgba(0, 0, 0, 0.3);
     transform: translateX(5px);
 }
@@ -520,7 +520,7 @@ select.race-select option {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .result-row:last-child {
@@ -528,26 +528,26 @@ select.race-select option {
 }
 
 .result-label {
-    color: var(--neon-pink);
-    font-size: 0.85rem;
+    color: var(--neon-orange);
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
 }
 
 .result-value {
     color: var(--neon-blue);
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     font-weight: 900;
-    text-shadow: 0 0 10px var(--neon-blue);
+    text-shadow: 0 0 8px var(--neon-blue);
 }
 
 .no-results {
     text-align: center;
     color: rgba(0, 240, 255, 0.5);
     font-style: italic;
-    padding: 30px;
-    font-size: 0.9rem;
+    padding: 20px;
+    font-size: 0.75rem;
 }
 
 #blazor-error-ui {
@@ -573,15 +573,15 @@ select.race-select option {
 
 @media (max-width: 768px) {
     .calculator-container {
-        padding: 25px;
+        padding: 20px;
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.6rem;
     }
 
     .subtitle {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
     }
 
     .tabs {
@@ -590,38 +590,38 @@ select.race-select option {
     }
 
     .tab {
-        font-size: 0.75rem;
-        padding: 12px 15px;
-        border-radius: 8px;
+        font-size: 0.65rem;
+        padding: 10px 12px;
+        border-radius: 6px;
         border: 2px solid transparent;
     }
 
     .tab.active {
-        border: 2px solid var(--neon-pink);
-        border-radius: 8px;
+        border: 2px solid var(--neon-orange);
+        border-radius: 6px;
         bottom: 0;
     }
 
     .unit-option {
-        padding: 8px 20px;
-        font-size: 0.8rem;
+        padding: 6px 16px;
+        font-size: 0.7rem;
     }
 
     input, select.race-select {
-        font-size: 1rem;
-        padding: 12px 15px;
+        font-size: 0.9rem;
+        padding: 10px 12px;
     }
 
     .calculate-button {
-        font-size: 1rem;
-        padding: 15px;
+        font-size: 0.85rem;
+        padding: 12px;
     }
 
     .result-display-value {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
     }
 
     .result-display-label {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
 }
