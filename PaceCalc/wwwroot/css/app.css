@@ -23,6 +23,8 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 body::before {
@@ -53,9 +55,10 @@ body::before {
 
 #app {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    flex: 1;
     padding: 20px;
 }
 
@@ -636,10 +639,10 @@ select.race-select option {
 
 /* Footer */
 .app-footer {
-    margin-top: 30px;
+    width: 100%;
     padding: 20px;
     text-align: center;
-    border-top: 2px solid rgba(0, 217, 255, 0.3);
+    margin-top: auto;
 }
 
 .footer-content {
